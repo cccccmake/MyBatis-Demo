@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="de.cccccmake.test.mapper.ComplexMapper">
+    <select id="getUserList" parameterType="int" resultMap="detailedResultMap">
+--         use database mybatis_test;
+        select sys_user.username as uname, sys_user.id as uid, sys_role.id as rid, sys_role.role_name as rname
+        from  (sys_user_role
+            left join sys_user
+            on sys_user_role.user_id  = sys_user.id
+            left join sys_role
+            on sys_user_role.role_id  = sys_role.id)
+        where sex = #{sex};
+    </select>
+    <resultMap id="detailedResultMap" type="de.cccccmake.test.pojo.SysUser">
+        <id property="id" column="uid"/>
+        <result property="username" column="uname"/>
+        <collection property="roleList" ofType="de.cccccmake.test.pojo.SysRole">
+            <id property="id" column="rid"/>
+            <result property="roleName" column="rname"/>
+        </collection>
+    </resultMap>
+</mapper>
